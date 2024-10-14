@@ -1,0 +1,37 @@
+config_version=5
+
+[application]
+
+config/name="inventio"
+run/main_scene="res://sequencer.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout=""
+
+[autoload]
+
+TrackData="*res://data/track_data.gd"
+Func="*res://utils/utility_functions.gd"
+Construct="*res://utils/numberlike/constructor.gd"
+
+[display]
+
+window/size/viewport_width=1000
+window/size/viewport_height=800
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dockable_container/plugin.cfg", "res://addons/midi/plugin.cfg")
+
+[gui]
+
+theme/custom_font="res://ui/JetBrainsMono-Regular.ttf"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(1, 1, 1, 1)

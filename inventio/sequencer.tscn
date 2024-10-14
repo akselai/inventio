@@ -1,0 +1,286 @@
+[gd_scene load_steps=27 format=3 uid="uid://2g47lh4a3ulb"]
+
+[ext_resource type="Script" path="res://ui/draw_view.gd" id="1_r04cj"]
+[ext_resource type="Script" path="res://ui/time_ticker.gd" id="1_rxt6o"]
+[ext_resource type="Script" path="res://ui/ticker.gd" id="2_742x2"]
+[ext_resource type="Script" path="res://audio/play_track.gd" id="2_p5buu"]
+[ext_resource type="Script" path="res://addons/dockable_container/layout_split.gd" id="3_qysf6"]
+[ext_resource type="Script" path="res://audio/play_midi_audio.gd" id="3_srspw"]
+[ext_resource type="Script" path="res://editables/toggle_edit_note_button.gd" id="3_vnoy4"]
+[ext_resource type="Script" path="res://ui/draw_grids.gd" id="4_oua3c"]
+[ext_resource type="Script" path="res://audio/stop button.gd" id="4_whyqg"]
+[ext_resource type="Script" path="res://ui/draw_notes.gd" id="5_llti6"]
+[ext_resource type="Script" path="res://editables/import_scala_file_button.gd" id="6_3r1q4"]
+[ext_resource type="Script" path="res://editables/edit_quant.gd" id="6_u7kek"]
+[ext_resource type="Script" path="res://utils/input.gd" id="11_ed3ss"]
+[ext_resource type="Script" path="res://addons/midi/MidiPlayer.gd" id="13_t17gm"]
+[ext_resource type="Script" path="res://editables/toggle_edit_grid_button.gd" id="14_grc0i"]
+[ext_resource type="Script" path="res://addons/dockable_container/dockable_container.gd" id="16_hjtcw"]
+[ext_resource type="Script" path="res://analysis.gd" id="17_57ny7"]
+[ext_resource type="Script" path="res://addons/dockable_container/layout_panel.gd" id="17_b5ekp"]
+[ext_resource type="Script" path="res://addons/dockable_container/layout.gd" id="18_1h701"]
+
+[sub_resource type="Resource" id="Resource_76ofo"]
+resource_name = "Tabs"
+script = ExtResource("17_b5ekp")
+names = PackedStringArray("notes")
+current_tab = 0
+
+[sub_resource type="Resource" id="Resource_harec"]
+resource_name = "Tabs"
+script = ExtResource("17_b5ekp")
+names = PackedStringArray("MarginContainer (play controls)")
+current_tab = 0
+
+[sub_resource type="Resource" id="Resource_pe5cs"]
+resource_name = "Split"
+script = ExtResource("3_qysf6")
+direction = 1
+percent = 1.0
+first = SubResource("Resource_76ofo")
+second = SubResource("Resource_harec")
+
+[sub_resource type="Resource" id="Resource_81xbs"]
+resource_name = "Tabs"
+script = ExtResource("17_b5ekp")
+names = PackedStringArray("MarginContainer (analysis tabs)")
+current_tab = 0
+
+[sub_resource type="Resource" id="Resource_oxicb"]
+resource_name = "Split"
+script = ExtResource("3_qysf6")
+direction = 0
+percent = 0.735507
+first = SubResource("Resource_pe5cs")
+second = SubResource("Resource_81xbs")
+
+[sub_resource type="Resource" id="Resource_k47fe"]
+resource_name = "Layout"
+script = ExtResource("18_1h701")
+root = SubResource("Resource_oxicb")
+hidden_tabs = {}
+
+[sub_resource type="LabelSettings" id="LabelSettings_5uvvu"]
+font_color = Color(0, 0, 0, 1)
+
+[node name="Sequencer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBar" type="MenuBar" parent="."]
+top_level = true
+layout_mode = 2
+anchor_right = 1.0
+offset_bottom = 30.0
+grow_horizontal = 2
+
+[node name="File" type="PopupMenu" parent="MenuBar"]
+item_count = 6
+item_0/text = "New Session"
+item_1/text = "Save"
+item_1/id = 1
+item_2/text = "Save As..."
+item_2/id = 2
+item_3/text = "Export"
+item_3/id = 3
+item_4/text = "Self Destruct"
+item_4/id = 4
+item_5/text = "Quit"
+item_5/id = 5
+
+[node name="DockableContainer" type="Container" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("16_hjtcw")
+layout = SubResource("Resource_k47fe")
+
+[node name="notes" type="MarginContainer" parent="DockableContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DockableContainer/notes"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="DockableContainer/notes/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport (time)" type="SubViewport" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer2"]
+handle_input_locally = false
+size = Vector2i(709, 40)
+render_target_update_mode = 4
+
+[node name="Node2D" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer2/SubViewport (time)"]
+script = ExtResource("1_rxt6o")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="DockableContainer/notes/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport (everything else)" type="SubViewport" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(709, 554)
+render_target_update_mode = 4
+
+[node name="visualizer" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)"]
+script = ExtResource("1_r04cj")
+
+[node name="editing" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer"]
+script = ExtResource("11_ed3ss")
+
+[node name="draw ticker" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer"]
+z_index = 1
+script = ExtResource("2_742x2")
+
+[node name="draw grids" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer"]
+z_index = -10
+script = ExtResource("4_oua3c")
+
+[node name="draw notes" type="Node2D" parent="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer"]
+script = ExtResource("5_llti6")
+
+[node name="MarginContainer (play controls)" type="MarginContainer" parent="DockableContainer"]
+editor_description = "nb: the things in this margin container are temporary and may undergo massive rework."
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DockableContainer/MarginContainer (play controls)"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer"]
+layout_mode = 2
+
+[node name="play button" type="Button" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+text = "▶"
+script = ExtResource("2_p5buu")
+
+[node name="stop button" type="Button" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+text = "■"
+script = ExtResource("4_whyqg")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer"]
+layout_mode = 2
+
+[node name="toggle edit note button" type="Button" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+toggle_mode = true
+text = "edit notes"
+script = ExtResource("3_vnoy4")
+
+[node name="toggle edit grid button" type="Button" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+toggle_mode = true
+text = "edit notes"
+script = ExtResource("14_grc0i")
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="edit numerator" type="LineEdit" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+text = "1"
+placeholder_text = "1"
+
+[node name="text that is a slash" type="Label" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+text = "/"
+label_settings = SubResource("LabelSettings_5uvvu")
+
+[node name="edit denominator" type="LineEdit" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+text = "4"
+placeholder_text = "4"
+
+[node name="text that says cursor duration" type="Label" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "cursor duration
+"
+label_settings = SubResource("LabelSettings_5uvvu")
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+
+[node name="edit this" type="LineEdit" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer4/HBoxContainer"]
+layout_mode = 2
+text = "4"
+placeholder_text = "4"
+script = ExtResource("6_u7kek")
+
+[node name="text that says quantization" type="Label" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer4"]
+layout_mode = 2
+text = "quantization
+(beats per bar)
+"
+label_settings = SubResource("LabelSettings_5uvvu")
+
+[node name="import scala file button" type="Button" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/h_separation = 200
+text = "import scala file"
+script = ExtResource("6_3r1q4")
+
+[node name="import scala file" type="FileDialog" parent="DockableContainer/MarginContainer (play controls)/HBoxContainer/import scala file button"]
+title = "Open a File"
+size = Vector2i(501, 170)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+use_native_dialog = true
+
+[node name="MarginContainer (analysis tabs)" type="MarginContainer" parent="DockableContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("17_57ny7")
+
+[node name="play midi audio" type="Node" parent="."]
+script = ExtResource("3_srspw")
+
+[node name="MidiPlayer" type="Node" parent="play midi audio"]
+script = ExtResource("13_t17gm")
+soundfont = "res://data/gm.sf2"
+
+[connection signal="sample_note" from="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer/editing" to="play midi audio" method="_on_editing_sample_note"]
+[connection signal="send_data_to_analysis" from="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer/editing" to="DockableContainer/MarginContainer (analysis tabs)" method="_on_editing_send_data_to_analysis"]
+[connection signal="play_smf" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer/play button" to="play midi audio" method="_on_play_button_play_smf"]
+[connection signal="halt_play_button" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer/stop button" to="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer/play button" method="_on_stop_button_halt_play_button"]
+[connection signal="toggled" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer2/toggle edit note button" to="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer" method="_on_toggle_edit_note_button_toggled"]
+[connection signal="text_changed" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3/HBoxContainer/edit numerator" to="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer" method="_on_edit_numerator_changed"]
+[connection signal="text_changed" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/VBoxContainer3/HBoxContainer/edit denominator" to="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer" method="_on_edit_denominator_changed"]
+[connection signal="scale_changed" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/import scala file button" to="DockableContainer/notes/VBoxContainer/SubViewportContainer/SubViewport (everything else)/visualizer" method="_on_import_scala_file_button_scale_changed"]
+[connection signal="file_selected" from="DockableContainer/MarginContainer (play controls)/HBoxContainer/import scala file button/import scala file" to="DockableContainer/MarginContainer (play controls)/HBoxContainer/import scala file button" method="_on_import_scala_file_selected"]
